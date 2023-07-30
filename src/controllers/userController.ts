@@ -22,34 +22,32 @@ const insertUser = (req: Request, res: Response) => {
   const user = req.body as User;
   userModel
     .createUser(user)
-    .then(user => {
+    .then((user) => {
       res.json(user);
     })
     .catch((err) => internalServerError(res, err));
 };
 
 const updateUser = async (req: Request, res: Response) => {
-  const id = parseInt(req.params.id)
+  const id = parseInt(req.params.id);
   {
-    
     if (!validateNumber(id)) return badRequest(res, "Id de usuário inválido");
 
-    const user = req.body
+    const user = req.body;
     if (!user) return badRequest(res, "Usuario inválido");
     if (!user.email)
       return badRequest(res, "Usuario inválido: Informe o seu email");
     if (!user.password)
       return badRequest(res, "Usuario inválido: Informe a sua senha");
 
-    const user_in_db = await userModel.getUser(id)
-    if(!user_in_db) return notFound(res)
+    const user_in_db = await userModel.getUser(id);
+    if (!user_in_db) return notFound(res);
   }
 
   const user = req.body as User;
-  console.log(user, " ID: ", id)
   userModel
     .updateUser(user)
-    .then(user => {
+    .then((user) => {
       res.json(user);
     })
     .catch((err) => internalServerError(res, err));
@@ -74,8 +72,8 @@ const deleteUser = async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
   {
     if (!validateNumber(id)) return badRequest(res, "Id de usuário inválido");
-    const user_in_db = await userModel.getUser(id)
-    if(!user_in_db) return notFound(res)
+    const user_in_db = await userModel.getUser(id);
+    if (!user_in_db) return notFound(res);
   }
 
   userModel

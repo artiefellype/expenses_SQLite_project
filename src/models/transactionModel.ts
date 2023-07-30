@@ -1,4 +1,4 @@
-import { dbQuery } from "../services/db";
+import { dbQuery, dbQueryFirst } from "../services/db";
 
 export enum TransactionCategories {
   "ALIMENTATION",
@@ -32,12 +32,45 @@ const createTransaction = async (transaction: Transaction, user_id: number) => {
 };
 
 const getTransactions = async () => {
-  const all_transactions = await dbQuery("SELECT * FROM user_transactions")
+  const allTransactions = await dbQuery("SELECT * FROM user_transactions");
+  return allTransactions as Transaction[];
+};
 
-  return all_transactions as Transaction[]
-}
+const getTransactionsByUser = async (id: number) => {
+  const allTransactionsByUser = await dbQuery(
+    "SELECT * FROM user_transactions WHERE user_id = ?",
+    [id]
+  );
+  return allTransactionsByUser as Transaction[];
+};
+
+const getTransactionsById = async (id: number) => {
+  const allTransactionsByUser = await dbQueryFirst(
+    "SELECT * FROM user_transactions WHERE id = ?",
+    [id]
+  );
+  return allTransactionsByUser as Transaction;
+};
+
+const updateTransaction = async (transaction: Transaction) => {
+  const transaction_updated = await dbQueryFirst(
+    "UPDATE user_transactions SET category = ? , value = ? WHERE id = ?",
+    [transaction.category, transaction.value, transaction.id]
+  );
+
+  return transaction_updated as Transaction;
+};
+
+const deleteTransaction = async (id: number) => {
+  await dbQuery("DELETE FROM user_transactions WHERE id = ?", [id]);
+  return "Transaction deleted";
+};
 
 export const transactionModel = {
   createTransaction,
-  getTransactions
+  getTransactions,
+  getTransactionsByUser,
+  getTransactionsById,
+  updateTransaction,
+  deleteTransaction,
 };
