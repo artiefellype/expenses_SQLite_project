@@ -82,9 +82,33 @@ const deleteUser = async (req: Request, res: Response) => {
     .catch((err) => internalServerError(res, err));
 };
 
+const login = async (req: Request, res: Response) => {
+  {
+    const user = req.body;
+
+    if (!user) return badRequest(res, "Usuario inválido");
+    if (!user.email)
+      return badRequest(res, "Usuario inválido: Informe o seu email");
+    if (!user.password)
+      return badRequest(res, "Usuario inválido: Informe a sua senha");
+
+  }
+
+  const user = req.body as User;
+  userModel
+    .login(user.email, user.password)
+    .then((user) => {
+      return res.json({ 
+        userID: user
+      });
+    })
+    .catch((err) => internalServerError(res, err));
+}
+
 export const userController = {
   insertUser,
   updateUser,
   getUser,
   deleteUser,
+  login,
 };
