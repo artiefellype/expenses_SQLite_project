@@ -30,7 +30,13 @@ const getUser = async (id: number) => {
   return user as User | undefined;
 };
 
+const getAllUsers = async () => {
+  const user = await dbQuery("SELECT * FROM Usuario");
+  return user as User[] | undefined;
+};
+
 const deleteUser = async (id: number) => {
+  await dbQueryFirst("DELETE FROM user_transactions WHERE user_id = ?", [id]);
   await dbQueryFirst("DELETE FROM Usuario WHERE id = ?", [id]);
   return `User with id: ${id} deleted`;
 };
@@ -47,6 +53,7 @@ export const userModel = {
   createUser,
   updateUser,
   getUser,
+  getAllUsers,
   login,
   deleteUser,
 };

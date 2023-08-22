@@ -68,6 +68,17 @@ const getUser = (req: Request, res: Response) => {
     .catch((err) => internalServerError(res, err));
 };
 
+const getAllUsers = (req: Request, res: Response) => {
+
+  userModel
+    .getAllUsers()
+    .then((user) => {
+      if (user) return res.json(user);
+      else return notFound(res);
+    })
+    .catch((err) => internalServerError(res, err));
+};
+
 const deleteUser = async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
   {
@@ -109,6 +120,7 @@ export const userController = {
   insertUser,
   updateUser,
   getUser,
+  getAllUsers,
   deleteUser,
   login,
 };
